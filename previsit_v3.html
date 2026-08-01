@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PreVisit — get ready for your appointment</title>
+<style>
+  :root{
+    --bg:#FAF8F4;
+    --card:#FFFFFF;
+    --ink:#22302B;
+    --ink-soft:#5B6B64;
+    --ink-faint:#96A39C;
+    --teal:#1F6F5C;
+    --teal-dark:#154D40;
+    --teal-tint:#E5F1EC;
+    --coral:#C1633F;
+    --coral-tint:#F7E9E1;
+    --red:#B23A2F;
+    --red-tint:#FBEAE7;
+    --amber:#A06A1E;
+    --amber-tint:#FBF1E0;
+    --line:#E4DFD3;
+    --line-strong:#CFC8B6;
+    --radius:10px;
+    --serif: "Source Serif 4", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
+  .wrap{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 4rem;}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;color:var(--ink);margin:0;}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);font-weight:600;}
+  .lede{color:var(--ink-soft);font-size:15px;line-height:1.5;margin-top:.4rem;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;margin-top:1.25rem;}
+  label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:.35rem;margin-top:1rem;}
+  label:first-child{margin-top:0;}
+  input[type=text], input[type=date], input[type=password], input[type=email], textarea, select{
+    width:100%;border:1px solid var(--line-strong);border-radius:8px;padding:.6rem .7rem;
+    font-family:var(--sans);font-size:14px;color:var(--ink);background:#fff;
+  }
+  textarea{resize:vertical;min-height:64px;}
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal);}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .row3{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.6rem;align-items:center;}
+  .row2{display:grid;grid-template-columns:1fr 1fr auto;gap:.6rem;align-items:center;}
+  @media (max-width:560px){ .row{grid-template-columns:1fr;} .row3,.row2{grid-template-columns:1fr;} }
+  .pillgroup{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem;}
+  .pill{border:1px solid var(--line-strong);border-radius:999px;padding:.4rem .85rem;font-size:13px;cursor:pointer;background:#fff;color:var(--ink-soft);user-select:none;}
+  .pill.active{background:var(--teal-tint);border-color:var(--teal);color:var(--teal-dark);font-weight:600;}
+  .listrow{display:flex;gap:.5rem;margin-top:.6rem;align-items:center;}
+  .listrow input{flex:1;}
+  .btn{border:1px solid var(--line-strong);background:#fff;border-radius:8px;padding:.55rem 1rem;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--sans);}
+  .btn:hover{border-color:var(--teal);}
+  .btn-primary{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .btn-primary:hover{background:var(--teal-dark);}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-ghost{border:none;background:none;color:var(--coral);font-weight:600;padding:.3rem .4rem;cursor:pointer;font-family:var(--sans);}
+  .btn-sm{padding:.4rem .7rem;font-size:13px;}
+  .actions{display:flex;gap:.75rem;margin-top:1.75rem;flex-wrap:wrap;}
+  .chip-remove{cursor:pointer;color:var(--ink-faint);}
+  .hint{font-size:12px;color:var(--ink-faint);margin-top:.3rem;}
+  .summary h3{margin-top:1.4rem;font-size:16px;}
+  .summary h3:first-child{margin-top:0;}
+  .field-line{display:flex;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:14px;}
+  .field-line .k{width:150px;flex-shrink:0;color:var(--ink-soft);font-weight:600;}
+  .field-line .v{color:var(--ink);}
+  .qlist{list-style:none;margin:.5rem 0 0;padding:0;}
+  .qlist li{display:flex;gap:.6rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:14px;}
+  .qlist li:last-child{border-bottom:none;}
+  .qnum{color:var(--teal);font-weight:600;flex-shrink:0;}
+  .badge{display:inline-block;background:var(--coral-tint);color:var(--coral);font-size:12px;font-weight:600;padding:.2rem .6rem;border-radius:6px;margin-bottom:.75rem;}
+  .disclaimer{font-size:12px;color:var(--ink-faint);border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;line-height:1.6;}
+  .progress{display:flex;gap:.4rem;margin:1.5rem 0 0;}
+  .progress .seg{flex:1;height:3px;background:var(--line);border-radius:2px;}
+  .progress .seg.done{background:var(--teal);}
+  .hidden{display:none;}
+  .banner{border-radius:var(--radius);padding:1rem 1.1rem;margin-top:1.25rem;}
+  .banner-red{background:var(--red-tint);border:1px solid #E3B3AB;}
+  .banner-red .btitle{color:var(--red);}
+  .banner-amber{background:var(--amber-tint);border:1px solid #E6CFA0;}
+  .banner-amber .btitle{color:var(--amber);}
+  .btitle{font-weight:700;font-size:14px;margin-bottom:.3rem;}
+  .bbody{font-size:13.5px;color:var(--ink-soft);}
+  .bbody ul{margin:.4rem 0 0;padding-left:1.1rem;}
+  .topbar{max-width:720px;margin:0 auto;padding:1rem 1.5rem 0;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+  .topbar .brandmark{font-family:var(--serif);font-weight:700;font-size:18px;color:var(--teal-dark);}
+  .topbar .tools{display:flex;gap:1rem;align-items:center;font-size:13px;}
+  .topbar select{width:auto;padding:.35rem .5rem;font-size:12.5px;}
+  .section-title{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-top:1.1rem;}
+  .section-title:first-child{margin-top:0;}
+  .photo-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;}
+  .photo-thumb{position:relative;width:76px;height:76px;border-radius:8px;overflow:hidden;border:1px solid var(--line-strong);}
+  .photo-thumb img{width:100%;height:100%;object-fit:cover;}
+  .photo-thumb span{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border-radius:4px;font-size:10px;padding:1px 4px;cursor:pointer;}
+  table.dash{width:100%;border-collapse:collapse;font-size:13.5px;}
+  table.dash th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--ink-faint);padding:.5rem;border-bottom:1px solid var(--line);}
+  table.dash td{padding:.6rem .5rem;border-bottom:1px solid var(--line);vertical-align:top;cursor:pointer;}
+  table.dash tr:hover td{background:var(--teal-tint);}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:.4rem;}
+  .dot.red{background:var(--red);} .dot.amber{background:var(--amber);} .dot.gray{background:#C7CFC9;}
+  @media print{
+    body{background:#fff;}
+    .no-print{display:none !important;}
+    .card{border:none;padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar no-print" id="topbar"></div>
+<div class="wrap" id="root"></div>
+
+<script>
+/* ============================= STATE ============================= */
+const State = {
+  view: 'login',      // login | app | dashboard
+  step: 1,            // 1..7 within app, or 'summary'
+  lang: localStorage.getItem('previsit_lang') || 'en',
+  user: null,
+  intake: { chief:'', onset:'', severity:'', pattern:[], assoc:'', tried:'', history:'' },
+  category: 'general',
+  adaptive: {},
+  ros: [],
+  screeners: {},
+  meds: [],
+  allergies: [],
+  insurance: { payer:'', memberId:'', groupNumber:'', planType:'' },
+  photos: [],
+  ownQuestions: '',
+  dashUnlocked: false,
+};
+
+function uid(){ return 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+/* ============================= I18N ============================= */
+const I18N = {
+  en: {
+    brand:'PreVisit', tagline:"Get ready for your appointment",
+    intro:"Answer a few questions about what's going on. We'll turn it into a clear, clinical summary your doctor can use — so nothing gets missed in the room.",
+    login_title:'Sign in', login_sub:'Your visits are saved to your account only, on this device.',
+    name:'Full name', dob:'Date of birth', email:'Email', password:'Password',
+    sign_in:'Sign in', create_account:'Create account', new_here:'New here?', have_account:'Already have an account?',
+    logout:'Sign out', dashboard:'Doctor dashboard',
+    whats_going_on:"What's going on", chief:'Main reason for this visit',
+    chief_ph:'e.g. Lower back pain, follow-up on blood pressure, persistent cough',
+    onset:'When did it start', onset_ph:'e.g. 3 weeks ago, sudden yesterday',
+    severity:'Severity right now', sev_select:'Select', sev_mild:'Mild — noticeable but not limiting',
+    sev_mod:'Moderate — affects daily activities', sev_sev:'Severe — hard to function',
+    pattern:'Pattern', p_const:'Constant', p_comes:'Comes and goes', p_worse:'Getting worse',
+    p_better:'Getting better', p_night:'Worse at night', p_activity:'Worse with activity',
+    assoc:"Anything else you've noticed alongside it", assoc_ph:'e.g. Some fatigue, mild fever, trouble sleeping',
+    tried:"What you've already tried", tried_ph:'e.g. Ibuprofen — helped a little. Rest — no change.',
+    history:'Relevant history (past diagnoses, family history, recent changes)',
+    history_ph:'e.g. Type 2 diabetes since 2019. Father had a heart attack at 55.',
+    back:'Back', cont:'Continue',
+    adaptive_title:'A few more specific questions', adaptive_sub:"Based on what you told us, these help your clinician get the full picture faster.",
+    yes:'Yes', no:'No',
+    ros_title:'Review of systems', ros_sub:"Check anything you've also been experiencing recently, even if it seems unrelated.",
+    screeners_title:'A couple of quick screening questions', screeners_sub:'Standard questions asked at most primary care visits.',
+    phq1:'Little interest or pleasure in doing things', phq2:'Feeling down, depressed, or hopeless',
+    gad1:'Feeling nervous, anxious, or on edge', gad2:'Not being able to stop or control worrying',
+    f0:'Not at all', f1:'Several days', f2:'More than half the days', f3:'Nearly every day',
+    meds_title:'Current medications', drug_name:'Drug name', dose:'Dose', freq:'Frequency', add_med:'+ Add medication',
+    allergies_title:'Allergies', allergen:'Allergen', reaction:'Reaction', add_allergy:'+ Add allergy',
+    insurance_title:'Insurance information', insurance_sub:'Optional — helps front-desk staff prep your visit.',
+    payer:'Insurance company', member_id:'Member ID', group_number:'Group number', plan_type:'Plan type',
+    photos_title:'Photos', photos_sub:'Optional — a rash, swelling, medication bottle, or lab report page can help a lot.',
+    add_photo:'+ Add photo', own_q:'Anything you already want to ask', own_q_ph:"Optional — we'll add more based on your symptoms",
+    generate:'Generate my visit summary',
+    summary_title:'Visit summary', ready:'Ready to bring to your visit',
+    hpi_title:'History of present illness (HPI)', timeline:'Timeline and history',
+    onset_l:'Onset', severity_l:'Severity', pattern_l:'Pattern', assoc_l:'Associated symptoms',
+    tried_l:'Already tried', history_l:'Relevant history',
+    ros_summary:'Review of systems', screeners_summary:'Screening results',
+    meds_summary:'Current medications', allergies_summary:'Allergies', insurance_summary:'Insurance',
+    questions_title:'Questions to ask', disclaimer:"This summary organizes what you entered — it is not a diagnosis and doesn't replace your clinician's judgment. Bring it as a starting point for the conversation.",
+    edit:'Edit', print:'Print / save as PDF', copy:'Copy summary', new_visit:'Start a new visit',
+    history_title:'Past visits', no_history:'No past visits yet.',
+    urgent_title:'Seek care promptly', urgent_body:'Based on your answers, this may need urgent attention. If you have severe symptoms right now, call 911 or go to the nearest emergency room rather than waiting for this appointment.',
+    warn_title:'Worth flagging to your care team',
+    none:'None', none_known:'None known', not_specified:'Not specified',
+    clinician_only:'Clinician view — decision support', clinician_only_sub:'Generated to save chart time. These are AI-assisted suggestions for a licensed clinician to confirm — not a diagnosis, not medical advice, and not a substitute for exam, history, and clinical judgment.',
+    ddx_title:'Differential considerations', ddx_empty:'No specific pattern detected — differential should be driven by history and exam.',
+    soap_title:'SOAP note (draft)', soap_s:'Subjective', soap_o:'Objective', soap_a:'Assessment', soap_p:'Plan',
+    soap_o_placeholder:'Not captured from patient intake — to be completed by clinician (vitals, exam findings, in-office testing).',
+    reco_title:'Suggested considerations for clinician', reco_empty:'No category-specific suggestions — use general clinical judgment.',
+    ehr_title:'EHR / interoperability', export_fhir:'Export FHIR JSON', send_ehr:'Send to EHR',
+    ehr_note:'Prepares a FHIR-shaped bundle. Actually transmitting to an EHR requires a backend with SMART on FHIR OAuth — see build notes.',
+    ai_source_ai:'Generated by connected AI backend.', ai_source_template:'Generated from a deterministic template (no AI backend connected) — see build notes at the end of this file.',
+    compliance_title:'Security & compliance status', compliance_body:'This build stores data in this browser only and is NOT HIPAA compliant as-is. Do not enter real patient data until a compliant backend, encryption, audit logging, and signed BAAs are in place. See build notes in the file source for the full checklist.',
+  },
+  es: {
+    brand:'PreVisit', tagline:'Prepárese para su cita',
+    intro:'Responda algunas preguntas sobre lo que sucede. Convertiremos sus respuestas en un resumen clínico claro para su médico.',
+    login_title:'Iniciar sesión', login_sub:'Sus visitas se guardan solo en su cuenta, en este dispositivo.',
+    name:'Nombre completo', dob:'Fecha de nacimiento', email:'Correo electrónico', password:'Contraseña',
+    sign_in:'Iniciar sesión', create_account:'Crear cuenta', new_here:'¿Nuevo aquí?', have_account:'¿Ya tiene una cuenta?',
+    logout:'Cerrar sesión', dashboard:'Panel del médico',
+    whats_going_on:'Qué sucede', chief:'Motivo principal de esta visita',
+    chief_ph:'ej. Dolor de espalda baja, seguimiento de presión arterial, tos persistente',
+    onset:'Cuándo comenzó', onset_ph:'ej. hace 3 semanas, repentino ayer',
+    severity:'Gravedad en este momento', sev_select:'Seleccionar', sev_mild:'Leve — molesto pero no limitante',
+    sev_mod:'Moderado — afecta actividades diarias', sev_sev:'Grave — difícil de funcionar',
+    pattern:'Patrón', p_const:'Constante', p_comes:'Va y viene', p_worse:'Empeorando',
+    p_better:'Mejorando', p_night:'Peor por la noche', p_activity:'Peor con la actividad',
+    assoc:'Algo más que haya notado junto con esto', assoc_ph:'ej. Fatiga, fiebre leve, problemas para dormir',
+    tried:'Qué ha intentado ya', tried_ph:'ej. Ibuprofeno — ayudó un poco. Descanso — sin cambio.',
+    history:'Historial relevante (diagnósticos previos, antecedentes familiares, cambios recientes)',
+    history_ph:'ej. Diabetes tipo 2 desde 2019. Padre tuvo un infarto a los 55.',
+    back:'Atrás', cont:'Continuar',
+    adaptive_title:'Algunas preguntas más específicas', adaptive_sub:'Esto ayuda a su médico a entender la situación más rápido.',
+    yes:'Sí', no:'No',
+    ros_title:'Revisión por sistemas', ros_sub:'Marque cualquier cosa que también haya sentido recientemente.',
+    screeners_title:'Preguntas de detección rápidas', screeners_sub:'Preguntas estándar en consultas de atención primaria.',
+    phq1:'Poco interés o placer en hacer cosas', phq2:'Sentirse decaído(a), deprimido(a) o sin esperanza',
+    gad1:'Sentirse nervioso(a), ansioso(a) o al límite', gad2:'No poder parar o controlar la preocupación',
+    f0:'Para nada', f1:'Varios días', f2:'Más de la mitad de los días', f3:'Casi todos los días',
+    meds_title:'Medicamentos actuales', drug_name:'Nombre del medicamento', dose:'Dosis', freq:'Frecuencia', add_med:'+ Agregar medicamento',
+    allergies_title:'Alergias', allergen:'Alérgeno', reaction:'Reacción', add_allergy:'+ Agregar alergia',
+    insurance_title:'Información del seguro', insurance_sub:'Opcional — ayuda al personal a preparar su visita.',
+    payer:'Compañía de seguros', member_id:'ID de miembro', group_number:'Número de grupo', plan_type:'Tipo de plan',
+    photos_title:'Fotos', photos_sub:'Opcional — una erupción, hinchazón, frasco de medicamento o resultado de laboratorio.',
+    add_photo:'+ Agregar foto', own_q:'Algo que ya quiera preguntar', own_q_ph:'Opcional — agregaremos más según sus síntomas',
+    generate:'Generar mi resumen de visita',
+    summary_title:'Resumen de la visita', ready:'Listo para llevar a su visita',
+    hpi_title:'Historia de la enfermedad actual (HPI)', timeline:'Cronología e historial',
+    onset_l:'Inicio', severity_l:'Gravedad', pattern_l:'Patrón', assoc_l:'Síntomas asociados',
+    tried_l:'Ya intentado', history_l:'Historial relevante',
+    ros_summary:'Revisión por sistemas', screeners_summary:'Resultados de detección',
+    meds_summary:'Medicamentos actuales', allergies_summary:'Alergias', insurance_summary:'Seguro',
+    questions_title:'Preguntas para hacer', disclaimer:'Este resumen organiza lo que usted ingresó — no es un diagnóstico y no reemplaza el criterio de su médico.',
+    edit:'Editar', print:'Imprimir / guardar como PDF', copy:'Copiar resumen', new_visit:'Comenzar una nueva visita',
+    history_title:'Visitas anteriores', no_history:'Aún no hay visitas anteriores.',
+    urgent_title:'Busque atención pronto', urgent_body:'Según sus respuestas, esto podría necesitar atención urgente. Si tiene síntomas graves ahora, llame al 911 o vaya a la sala de emergencias más cercana.',
+    warn_title:'Vale la pena señalar a su equipo médico',
+    none:'Ninguno', none_known:'Ninguna conocida', not_specified:'No especificado',
+    clinician_only:'Vista clínica — apoyo a la decisión', clinician_only_sub:'Generado para ahorrar tiempo. Son sugerencias asistidas por IA para que un médico las confirme — no es un diagnóstico ni sustituye el juicio clínico.',
+    ddx_title:'Consideraciones diferenciales', ddx_empty:'No se detectó un patrón específico — el diferencial debe basarse en la historia y el examen.',
+    soap_title:'Nota SOAP (borrador)', soap_s:'Subjetivo', soap_o:'Objetivo', soap_a:'Evaluación', soap_p:'Plan',
+    soap_o_placeholder:'No capturado en la admisión del paciente — a completar por el médico (signos vitales, hallazgos del examen).',
+    reco_title:'Consideraciones sugeridas para el médico', reco_empty:'Sin sugerencias específicas — usar juicio clínico general.',
+    ehr_title:'EHR / interoperabilidad', export_fhir:'Exportar FHIR JSON', send_ehr:'Enviar al EHR',
+    ehr_note:'Prepara un paquete con forma FHIR. Transmitirlo realmente a un EHR requiere un backend con OAuth SMART on FHIR — ver notas de compilación.',
+    ai_source_ai:'Generado por el backend de IA conectado.', ai_source_template:'Generado con una plantilla determinista (sin backend de IA conectado).',
+    compliance_title:'Estado de seguridad y cumplimiento', compliance_body:'Esta versión almacena datos solo en este navegador y NO cumple con HIPAA tal como está. No ingrese datos reales de pacientes hasta contar con un backend conforme, cifrado, registro de auditoría y BAA firmados.',
+  }
+};
+function t(key){ return (I18N[State.lang] && I18N[State.lang][key]) || I18N.en[key] || key; }
+
+/* ============================= CLINICAL CONTENT ============================= */
+// Chief-complaint classifier. Simple keyword match for the MVP — a great
+// candidate to later replace with a small LLM classification call, but the
+// question/red-flag *content* below is what a physician should own either way.
+const CATEGORY_KEYWORDS = {
+  chest_pain: ['chest pain','chest pressure','chest tightness','dolor de pecho'],
+  headache: ['headache','migraine','head pain','dolor de cabeza'],
+  abdominal_pain: ['stomach','abdominal','belly','abdomen','nausea','dolor de estómago','dolor abdominal'],
+  respiratory: ['cough','shortness of breath','breathing','wheeze','tos','respirar'],
+  skin: ['rash','skin','itch','hives','sarpullido','piel'],
+  musculoskeletal: ['back pain','joint','knee','shoulder','muscle','espalda','articulación'],
+  urinary: ['urination','urinary','bladder','orinar'],
+  mental_health: ['anxious','anxiety','depressed','depression','mood','ansiedad','depresión'],
+};
+function categorize(text){
+  const s = (text||'').toLowerCase();
+  for(const cat in CATEGORY_KEYWORDS){
+    if(CATEGORY_KEYWORDS[cat].some(k=>s.includes(k))) return cat;
+  }
+  return 'general';
+}
+
+const ADAPTIVE_QUESTIONS = {
+  chest_pain: [
+    {id:'radiates', label:'Does the pain spread to your arm, jaw, neck, or back?'},
+    {id:'sob', label:'Are you short of breath?'},
+    {id:'sweating', label:'Sweating, nausea, or lightheadedness with it?'},
+    {id:'exertion', label:'Brought on by physical activity?'},
+  ],
+  headache: [
+    {id:'worst_ever', label:'Is this the worst headache of your life, or did it start suddenly like a thunderclap?'},
+    {id:'fever_stiffneck', label:'Fever or a stiff neck along with it?'},
+    {id:'vision_changes', label:'Any vision changes, confusion, weakness, or trouble speaking?'},
+  ],
+  abdominal_pain: [
+    {id:'vomiting_blood', label:'Vomiting blood, or blood/black color in stool?'},
+    {id:'fever', label:'Fever with it?'},
+    {id:'appetite', label:'Loss of appetite or unintentional weight loss?'},
+  ],
+  respiratory: [
+    {id:'sob_rest', label:'Short of breath even at rest?'},
+    {id:'blood_sputum', label:'Coughing up blood?'},
+    {id:'chest_pain', label:'Chest pain when you breathe or cough?'},
+    {id:'fever', label:'Fever or chills?'},
+  ],
+  skin: [
+    {id:'spreading', label:'Is it spreading quickly?'},
+    {id:'face_throat_swelling', label:'Any swelling of the face, lips, or throat, or trouble breathing?'},
+    {id:'new_product', label:'Any new medication, food, soap, or product before it started?'},
+    {id:'painful_blistering', label:'Painful, blistering, or peeling skin?'},
+  ],
+  musculoskeletal: [
+    {id:'injury', label:'Did it start with a specific injury or fall?'},
+    {id:'numbness', label:'Any numbness, tingling, or weakness?'},
+    {id:'bowel_bladder', label:'(If back pain) Any new loss of bladder or bowel control?'},
+  ],
+  urinary: [
+    {id:'blood', label:'Any blood in the urine?'},
+    {id:'fever_flank', label:'Fever or pain in your back/side along with it?'},
+  ],
+  mental_health: [
+    {id:'safety', label:'Any thoughts of harming yourself or others recently?'},
+    {id:'sleep_appetite', label:'Noticeable change in sleep or appetite?'},
+  ],
+  general: [
+    {id:'worsening_rapid', label:'Is it getting noticeably worse over hours (not days)?'},
+    {id:'fever', label:'Any fever?'},
+  ],
+};
+
+const ROS_SYSTEMS = {
+  chest_pain: ['cardiac','respiratory','gi'],
+  headache: ['neuro','constitutional'],
+  abdominal_pain: ['gi','urinary','constitutional'],
+  respiratory: ['respiratory','cardiac','constitutional'],
+  skin: ['skin','allergic','constitutional'],
+  musculoskeletal: ['musculoskeletal','neuro'],
+  urinary: ['urinary','gi','constitutional'],
+  mental_health: ['psych','constitutional','sleep'],
+  general: ['constitutional','skin','gi','respiratory','cardiac','neuro','musculoskeletal','psych'],
+};
+const ROS_ITEMS = {
+  constitutional:['Fever','Chills','Unintentional weight loss','Fatigue','Night sweats'],
+  cardiac:['Chest pain','Palpitations','Swelling in legs','Shortness of breath lying flat'],
+  respiratory:['Cough','Shortness of breath','Wheezing','Coughing up blood'],
+  gi:['Nausea','Vomiting','Diarrhea','Constipation','Blood in stool'],
+  urinary:['Painful urination','Frequent urination','Blood in urine'],
+  skin:['Rash','Itching','New or changing mole','Hair or nail changes'],
+  neuro:['Headache','Dizziness','Numbness or tingling','Weakness','Vision changes'],
+  musculoskeletal:['Joint pain','Joint swelling','Muscle weakness','Back pain'],
+  psych:['Low mood','Anxiety','Trouble sleeping','Appetite changes'],
+  allergic:['Hives','Swelling of lips/tongue/throat'],
+  sleep:['Trouble falling asleep','Waking frequently','Daytime sleepiness'],
+};
+
+// Deterministic, physician-editable differential "considerations" per category.
+// This is NOT a diagnosis and NEVER shown to the patient as one — it's a chart-prep
+// aid for the clinician to confirm/refute against exam and testing. A physician
+// should own and edit this list, same as the red-flag and question tables above.
+const DIFFERENTIAL_CONSIDERATIONS = {
+  chest_pain: ['Acute coronary syndrome','Musculoskeletal/costochondritis','GERD','Anxiety/panic','Pulmonary embolism','Pericarditis'],
+  headache: ['Tension-type headache','Migraine','Sinusitis','Medication overuse headache','Subarachnoid hemorrhage (if thunderclap onset)','Meningitis (if febrile with neck stiffness)'],
+  abdominal_pain: ['Gastroenteritis','GERD/peptic ulcer disease','Biliary colic/cholecystitis','Appendicitis','Constipation','Urinary tract infection'],
+  respiratory: ['Viral upper respiratory infection','Acute bronchitis','Pneumonia','Asthma/reactive airway','COPD exacerbation','Pulmonary embolism (if pleuritic + risk factors)'],
+  skin: ['Contact dermatitis','Allergic reaction/urticaria','Cellulitis','Eczema flare','Drug eruption','Fungal infection'],
+  musculoskeletal: ['Mechanical strain/sprain','Degenerative disc/joint disease','Radiculopathy','Inflammatory arthritis','Cauda equina (if bowel/bladder red flags)'],
+  urinary: ['Uncomplicated UTI','Pyelonephritis','Nephrolithiasis','Overactive bladder'],
+  mental_health: ['Major depressive episode','Generalized anxiety','Adjustment disorder','Substance-related mood symptoms'],
+  general: ['Viral illness','Stress/lifestyle-related symptoms','Deconditioning','Needs further history to narrow'],
+};
+function buildTemplateDifferential(){
+  const list = DIFFERENTIAL_CONSIDERATIONS[State.category] || DIFFERENTIAL_CONSIDERATIONS.general;
+  return { items: list.slice(), source:'template' };
+}
+async function generateDifferential(){
+  try{
+    const res = await fetch('/api/differential-diagnosis', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ intake: State.intake, adaptive: State.adaptive, ros: State.ros, category: State.category })
+    });
+    if(res.ok){ const data = await res.json(); if(data && Array.isArray(data.items)) return {items:data.items, source:'ai'}; }
+  }catch(e){ /* no backend configured — fall back below */ }
+  return buildTemplateDifferential();
+}
+
+// Deterministic, physician-editable "considerations" for the clinician — NOT
+// orders, NOT a treatment plan. Framed as prompts to weigh, not instructions.
+const CLINICAL_RECOMMENDATIONS = {
+  chest_pain: ['Consider ECG and troponin if any cardiac risk factors or exertional component','Assess cardiac risk factors (smoking, HTN, diabetes, family history)','Consider CXR if respiratory symptoms present'],
+  headache: ['Screen for red-flag features (thunderclap onset, fever+stiff neck, focal deficits) before routine workup','Review medication-overuse pattern if frequent analgesic use','Consider neuro exam focus on visual fields and gait'],
+  abdominal_pain: ['Localize pain and correlate with exam (Murphy\'s, McBurney\'s, CVA tenderness)','Consider urinalysis and basic labs if fever or systemic symptoms','Consider imaging if red-flag features present'],
+  respiratory: ['Check oxygen saturation','Consider CXR if fever, hemoptysis, or prolonged symptoms','Assess for asthma/COPD history to guide bronchodilator trial'],
+  skin: ['Photograph and measure lesion for the chart if not already provided','Ask about new exposures (soap, detergent, medication, food) if not captured','Consider urgent evaluation if airway involvement reported'],
+  musculoskeletal: ['Screen for red-flag neuro symptoms before conservative management','Consider imaging only if red flags or failure of conservative therapy','Discuss activity modification and follow-up timeline'],
+  urinary: ['Urinalysis/urine culture if not already done','Consider imaging if recurrent or with flank pain/fever'],
+  mental_health: ['Review PHQ-2/GAD-2 results below and consider full PHQ-9/GAD-7 if positive','Screen for safety directly if not already documented','Consider referral to behavioral health if moderate-severe'],
+  general: ['Clarify chief complaint further — limited category-specific guidance available'],
+};
+function buildTemplateRecommendations(){
+  const list = CLINICAL_RECOMMENDATIONS[State.category] || CLINICAL_RECOMMENDATIONS.general;
+  return { items: list.slice(), source:'template' };
+}
+async function generateClinicalRecommendations(){
+  try{
+    const res = await fetch('/api/clinical-recommendations', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ intake: State.intake, adaptive: State.adaptive, category: State.category, flags: evaluateRedFlags() })
+    });
+    if(res.ok){ const data = await res.json(); if(data && Array.isArray(data.items)) return {items:data.items, source:'ai'}; }
+  }catch(e){ /* no backend configured — fall back below */ }
+  return buildTemplateRecommendations();
+}
+
+// Deterministic, physician-editable red-flag rules — deliberately not AI-generated.
+function evaluateRedFlags(){
+  const a = State.adaptive, cat = State.category, flags = [];
+  function add(id, level, msg){ flags.push({id, level, msg}); }
+
+  if(cat==='chest_pain' && (a.radiates||a.sob||a.sweating))
+    add('cp','urgent','Chest pain with radiation, shortness of breath, or sweating can indicate a cardiac event.');
+  if(cat==='headache' && a.worst_ever)
+    add('hdr1','urgent','A sudden, "worst-ever" headache can indicate a serious neurological event.');
+  if(cat==='headache' && a.fever_stiffneck)
+    add('hdr2','urgent','Headache with fever and neck stiffness can indicate meningitis.');
+  if(cat==='headache' && a.vision_changes)
+    add('hdr3','urgent','Headache with vision change, confusion, weakness, or speech trouble needs urgent evaluation.');
+  if(cat==='abdominal_pain' && a.vomiting_blood)
+    add('abd','urgent','Vomiting blood or black/bloody stool can indicate GI bleeding.');
+  if(cat==='respiratory' && a.sob_rest)
+    add('resp1','urgent','Shortness of breath at rest needs prompt evaluation.');
+  if(cat==='respiratory' && a.blood_sputum)
+    add('resp2','urgent','Coughing up blood needs prompt evaluation.');
+  if(cat==='skin' && a.face_throat_swelling)
+    add('skin1','urgent','Facial/throat swelling or trouble breathing with a rash can indicate a severe allergic reaction.');
+  if(cat==='skin' && a.painful_blistering)
+    add('skin2','warn','Painful blistering or peeling skin should be seen promptly.');
+  if(cat==='musculoskeletal' && a.bowel_bladder)
+    add('back','urgent','New loss of bladder or bowel control with back pain can indicate a surgical emergency.');
+  if(cat==='urinary' && a.fever_flank)
+    add('uri','warn','Fever with flank pain and urinary symptoms can indicate a kidney infection.');
+  if(cat==='mental_health' && a.safety)
+    add('mh','urgent','Reported thoughts of self-harm or harming others require immediate attention. If in immediate danger, call or text 988 (Suicide & Crisis Lifeline) or 911.');
+  if(a.worsening_rapid)
+    add('gen','warn','Symptoms worsening over hours rather than days warrant closer attention.');
+  if(State.intake.severity === t('sev_sev'))
+    add('sev','warn','Patient reports symptoms severe enough to impair function.');
+
+  return flags.sort((x,y)=> (x.level==='urgent'?-1:1) - (y.level==='urgent'?-1:1));
+}
+function evaluateScreenerFlags(){
+  const s = State.screeners, flags = [];
+  const phq = (s.phq1||0)+(s.phq2||0);
+  const gad = (s.gad1||0)+(s.gad2||0);
+  if(phq>=3) flags.push({id:'phq', level:'warn', msg:`PHQ-2 score ${phq}/6 — positive screen for depression (cutoff ≥3). Consider full PHQ-9.`});
+  if(gad>=3) flags.push({id:'gad', level:'warn', msg:`GAD-2 score ${gad}/6 — positive screen for anxiety (cutoff ≥3). Consider full GAD-7.`});
+  return flags;
+}
+
+// HPI generation: tries an optional backend endpoint first (for a real LLM call
+// via your own server-side API key — see note in README section at bottom of
+// this file), and always falls back to this deterministic clinical-language
+// template so the app works with zero backend setup.
+function buildTemplateHPI(){
+  const i = State.intake, a = State.adaptive;
+  const parts = [];
+  parts.push(`Patient presents with ${i.chief || 'the reported concern'}${i.onset ? ', onset ' + i.onset : ''}.`);
+  const sevMap = {};
+  sevMap[t('sev_mild')] = 'Severity is mild and not functionally limiting.';
+  sevMap[t('sev_mod')] = 'Severity is moderate, affecting daily activities.';
+  sevMap[t('sev_sev')] = 'Severity is severe, significantly impairing function.';
+  if(sevMap[i.severity]) parts.push(sevMap[i.severity]);
+  if(i.pattern.length) parts.push(`Course is described as ${i.pattern.join(', ').toLowerCase()}.`);
+  if(i.assoc) parts.push(`Associated symptoms include: ${i.assoc}.`);
+  if(i.tried) parts.push(`Patient has already tried: ${i.tried}.`);
+  if(i.history) parts.push(`Relevant history: ${i.history}.`);
+  const positives = Object.keys(a).filter(k=>a[k]===true).map(k=>k.replace(/_/g,' '));
+  if(positives.length) parts.push(`Pertinent positives on targeted questioning: ${positives.join(', ')}.`);
+  return parts.filter(Boolean).join(' ');
+}
+async function generateHPI(){
+  try{
+    const res = await fetch('/api/generate-hpi', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ intake: State.intake, adaptive: State.adaptive, category: State.category })
+    });
+    if(res.ok){ const data = await res.json(); if(data && data.hpi) return {text:data.hpi, source:'ai'}; }
+  }catch(e){ /* no backend configured — fall back below */ }
+  return { text: buildTemplateHPI(), source:'template' };
+}
+
+// SOAP note: Subjective is assembled from patient-entered intake (safe — it's
+// literally what the patient reported). Objective is deliberately left as a
+// placeholder for the clinician — vitals/exam can't come from a self-report
+// form. Assessment/Plan reuse the differential and recommendations above so
+// there's exactly one place each is generated.
+function buildTemplateSOAP(hpiText, ddx, reco, flags){
+  const i = State.intake;
+  const s = [hpiText];
+  if(State.ros.length) s.push(`ROS positive for: ${State.ros.join(', ')}.`);
+  if(State.meds.length) s.push(`Current medications: ${State.meds.map(m=>`${m.name} ${m.dose} ${m.freq}`).join('; ')}.`);
+  if(State.allergies.length) s.push(`Allergies: ${State.allergies.map(a=>`${a.allergen} (${a.reaction})`).join('; ')}.`);
+  else s.push('Allergies: none reported.');
+  const o = t('soap_o_placeholder');
+  const aParts = [];
+  if(flags.some(f=>f.level==='urgent')) aParts.push('Patient-reported features flagged as potentially urgent — clinician to assess emergently before proceeding with routine visit.');
+  aParts.push(`Differential to consider (unconfirmed): ${ddx.items.join(', ')}.`);
+  const p = reco.items.map(r=>`- ${r}`).join('\n');
+  return { s: s.join(' '), o, a: aParts.join(' '), p };
+}
+async function generateSOAPNote(hpi, ddx, reco, flags){
+  try{
+    const res = await fetch('/api/generate-soap', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ intake: State.intake, adaptive: State.adaptive, ros: State.ros, meds: State.meds,
+        allergies: State.allergies, category: State.category, hpi: hpi.text, differential: ddx.items, recommendations: reco.items })
+    });
+    if(res.ok){ const data = await res.json(); if(data && data.s){ return { s:data.s, o:data.o||t('soap_o_placeholder'), a:data.a, p:data.p, source:'ai' }; } }
+  }catch(e){ /* no backend configured — fall back below */ }
+  return Object.assign(buildTemplateSOAP(hpi.text, ddx, reco, flags), {source:'template'});
+}
+
+/* ============================= EHR / FHIR EXPORT ============================= */
+// Builds a FHIR-*shaped* bundle from the visit so a real backend integration has
+// something to map from. This does NOT talk to an actual EHR — real EHR
+// integration requires a server-side SMART on FHIR OAuth2 client and the health
+// system's approval, which cannot live in client-side code. See build notes.
+function buildFHIRBundle(visit){
+  const patientRef = 'urn:uuid:' + visit.patientId;
+  const entries = [
+    { resource: { resourceType:'Patient', id: visit.patientId, name:[{text: visit.patientName||'Unknown'}] } },
+    { resource: { resourceType:'Condition', code:{text: visit.intake.chief}, subject:{reference: patientRef},
+        onsetString: visit.intake.onset||undefined, note:[{text: visit.hpi.text}] } },
+    { resource: { resourceType:'DocumentReference', status:'current', type:{text:'Pre-visit intake summary'},
+        subject:{reference: patientRef}, date: visit.createdAt,
+        content:[{ attachment:{ contentType:'text/plain', data: btoa(unescape(encodeURIComponent(visit.hpi.text))) } }] } },
+  ];
+  (visit.meds||[]).forEach(m=> entries.push({ resource:{ resourceType:'MedicationStatement', status:'active',
+    medicationCodeableConcept:{text:m.name}, dosage:[{text:`${m.dose} ${m.freq}`}], subject:{reference:patientRef} } }));
+  (visit.allergies||[]).forEach(a=> entries.push({ resource:{ resourceType:'AllergyIntolerance',
+    code:{text:a.allergen}, reaction:[{description:a.reaction}], patient:{reference:patientRef} } }));
+  if(visit.soap) entries.push({ resource:{ resourceType:'DocumentReference', status:'current', type:{text:'SOAP note (draft, unsigned)'},
+    subject:{reference: patientRef}, date: visit.createdAt,
+    content:[{ attachment:{ contentType:'text/plain', data: btoa(unescape(encodeURIComponent(
+      `S: ${visit.soap.s}\nO: ${visit.soap.o}\nA: ${visit.soap.a}\nP: ${visit.soap.p}`))) } }] } });
+  return { resourceType:'Bundle', type:'collection', timestamp: new Date().toISOString(), entry: entries };
+}
+function exportFHIR(visitId){
+  const visit = getAllVisits().find(v=>v.id===visitId);
+  if(!visit) return;
+  const bundle = buildFHIRBundle(visit);
+  const blob = new Blob([JSON.stringify(bundle,null,2)], {type:'application/fhir+json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `previsit-${visit.id}-fhir.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+async function sendToEHR(visitId){
+  const visit = getAllVisits().find(v=>v.id===visitId);
+  if(!visit) return;
+  const bundle = buildFHIRBundle(visit);
+  try{
+    const res = await fetch('/api/ehr-export', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(bundle)
+    });
+    if(res.ok){ alert('Sent to EHR backend.'); return; }
+    throw new Error('backend rejected');
+  }catch(e){
+    alert('No EHR backend configured at /api/ehr-export — downloading the FHIR bundle instead so it can be uploaded manually or wired into your integration engine.');
+    exportFHIR(visitId);
+  }
+}
+
+/* ============================= STORAGE ============================= */
+function readJSON(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) || fallback; }catch(e){ return fallback; } }
+function writeJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+// Backend-first persistence: tries POST /api/visits (wire this to your real,
+// compliant database) and always also caches to localStorage so the app keeps
+// working with zero backend and the doctor dashboard has something to read
+// synchronously. This is a caching layer, not compliant storage on its own —
+// see build notes at the end of this file for what "compliant" actually requires.
+async function saveVisit(visit){
+  writeJSON('previsit_visits', [visit, ...readJSON('previsit_visits', [])]);
+  try{
+    await fetch('/api/visits', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(visit)
+    });
+  }catch(e){ /* no backend configured — localStorage cache above already has it */ }
+}
+function getVisitsForPatient(patientId){
+  return readJSON('previsit_visits', []).filter(v=>v.patientId===patientId);
+}
+function getAllVisits(){ return readJSON('previsit_visits', []); }
+
+/* ============================= AUTH (MVP-only — see notes at bottom) ============================= */
+function signup(name, dob, email, password){
+  const users = readJSON('previsit_users', {});
+  if(users[email]) throw new Error('An account with this email already exists.');
+  const id = uid();
+  users[email] = {id, name, dob, email, password};
+  writeJSON('previsit_users', users);
+  const session = {id, name, dob, email};
+  writeJSON('previsit_session', session);
+  return session;
+}
+function login(email, password){
+  const users = readJSON('previsit_users', {});
+  const rec = users[email];
+  if(!rec || rec.password !== password) throw new Error('Incorrect email or password.');
+  const session = {id:rec.id, name:rec.name, dob:rec.dob, email:rec.email};
+  writeJSON('previsit_session', session);
+  return session;
+}
+function logout(){ localStorage.removeItem('previsit_session'); State.user=null; State.view='login'; render(); }
+
+/* ============================= RENDER: TOPBAR ============================= */
+function renderTopbar(){
+  const bar = document.getElementById('topbar');
+  if(State.view==='login'){ bar.innerHTML=''; return; }
+  bar.innerHTML = `
+    <div class="brandmark">${t('brand')}</div>
+    <div class="tools">
+      <select onchange="setLang(this.value)">
+        <option value="en" ${State.lang==='en'?'selected':''}>English</option>
+        <option value="es" ${State.lang==='es'?'selected':''}>Español</option>
+      </select>
+      <a href="#" onclick="goDashboard();return false;" class="btn-ghost">${t('dashboard')}</a>
+      <a href="#" onclick="logout();return false;" class="btn-ghost">${t('logout')}</a>
+    </div>`;
+}
+function setLang(l){ State.lang=l; localStorage.setItem('previsit_lang', l); render(); }
+
+/* ============================= RENDER: LOGIN ============================= */
+let loginMode = 'login';
+function renderLogin(){
+  document.getElementById('root').innerHTML = `
+    <div class="eyebrow">${t('brand')}</div>
+    <h1>${t('tagline')}</h1>
+    <p class="lede">${t('intro')}</p>
+    <div class="card">
+      <h2>${t('login_title')}</h2>
+      <p class="hint" style="margin-bottom:1rem;">${t('login_sub')}</p>
+      <div id="loginError"></div>
+      ${loginMode==='signup' ? `
+        <label>${t('name')}</label><input type="text" id="f_name">
+        <label>${t('dob')}</label><input type="date" id="f_dob">` : ''}
+      <label>${t('email')}</label><input type="email" id="f_email">
+      <label>${t('password')}</label><input type="password" id="f_password">
+      <div class="actions">
+        <button class="btn btn-primary" onclick="submitAuth()">${loginMode==='login'?t('sign_in'):t('create_account')}</button>
+      </div>
+      <p class="hint" style="margin-top:1rem;">
+        ${loginMode==='login'
+          ? `${t('new_here')} <a href="#" onclick="loginMode='signup';renderLogin();return false;">${t('create_account')}</a>`
+          : `${t('have_account')} <a href="#" onclick="loginMode='login';renderLogin();return false;">${t('sign_in')}</a>`}
+      </p>
+    </div>
+    <div class="actions"><a href="#" onclick="goDashboard();return false;" class="btn-ghost">${t('dashboard')} →</a></div>
+  `;
+}
+function submitAuth(){
+  const email = document.getElementById('f_email').value.trim();
+  const password = document.getElementById('f_password').value;
+  const errBox = document.getElementById('loginError');
+  try{
+    let session;
+    if(loginMode==='signup'){
+      const name = document.getElementById('f_name').value.trim();
+      const dob = document.getElementById('f_dob').value;
+      if(!name || !email || !password) throw new Error('Please fill in all fields.');
+      session = signup(name, dob, email, password);
+    } else {
+      session = login(email, password);
+    }
+    State.user = session; State.view='app'; State.step=1; render();
+  }catch(e){
+    errBox.innerHTML = `<div class="banner banner-amber"><div class="bbody">${escapeHtml(e.message)}</div></div>`;
+  }
+}
+
+/* ============================= HELPERS ============================= */
+function escapeHtml(s){ const d=document.createElement('div'); d.innerText=s==null?'':String(s); return d.innerHTML; }
+function togglePattern(val){
+  const p = State.intake.pattern;
+  const idx = p.indexOf(val);
+  if(idx>-1) p.splice(idx,1); else p.push(val);
+  renderApp();
+}
+function toggleRos(item){
+  const idx = State.ros.indexOf(item);
+  if(idx>-1) State.ros.splice(idx,1); else State.ros.push(item);
+  renderApp();
+}
+function setAdaptive(id, val){ State.adaptive[id]=val; renderApp(); }
+function setScreener(id, val){ State.screeners[id]=val; renderApp(); }
+
+/* ============================= RENDER: PROGRESS ============================= */
+function renderProgress(){
+  const total = 7;
+  let html = '<div class="progress no-print">';
+  for(let i=1;i<=total;i++) html += `<div class="seg ${State.step>=i?'done':''}"></div>`;
+  html += '</div>';
+  return html;
+}
+
+/* ============================= RENDER: STEP 1 — INTAKE ============================= */
+function renderStep1(){
+  const i = State.intake;
+  return `
+  <div class="card">
+    <h2>${t('whats_going_on')}</h2>
+    <label>${t('chief')}</label>
+    <input type="text" id="f_chief" placeholder="${t('chief_ph')}" value="${escapeHtml(i.chief)}" oninput="State.intake.chief=this.value">
+    <div class="row">
+      <div>
+        <label>${t('onset')}</label>
+        <input type="text" id="f_onset" placeholder="${t('onset_ph')}" value="${escapeHtml(i.onset)}" oninput="State.intake.onset=this.value">
+      </div>
+      <div>
+        <label>${t('severity')}</label>
+        <select id="f_severity" onchange="State.intake.severity=this.value">
+          <option value="">${t('sev_select')}</option>
+          <option ${i.severity===t('sev_mild')?'selected':''}>${t('sev_mild')}</option>
+          <option ${i.severity===t('sev_mod')?'selected':''}>${t('sev_mod')}</option>
+          <option ${i.severity===t('sev_sev')?'selected':''}>${t('sev_sev')}</option>
+        </select>
+      </div>
+    </div>
+    <label>${t('pattern')}</label>
+    <div class="pillgroup">
+      ${[['p_const',t('p_const')],['p_comes',t('p_comes')],['p_worse',t('p_worse')],['p_better',t('p_better')],['p_night',t('p_night')],['p_activity',t('p_activity')]]
+        .map(([k,label])=>`<div class="pill ${i.pattern.includes(label)?'active':''}" onclick="togglePattern('${escapeHtml(label).replace(/'/g,"\\'")}')">${label}</div>`).join('')}
+    </div>
+    <label>${t('assoc')}</label>
+    <textarea placeholder="${t('assoc_ph')}" oninput="State.intake.assoc=this.value">${escapeHtml(i.assoc)}</textarea>
+    <label>${t('tried')}</label>
+    <textarea placeholder="${t('tried_ph')}" oninput="State.intake.tried=this.value">${escapeHtml(i.tried)}</textarea>
+    <label>${t('history')}</label>
+    <textarea placeholder="${t('history_ph')}" oninput="State.intake.history=this.value">${escapeHtml(i.history)}</textarea>
+  </div>
+  <div class="actions no-print">
+    <button class="btn btn-primary" ${!i.chief.trim()?'disabled':''} onclick="goStep(2)">${t('cont')}</button>
+  </div>`;
+}
+
+/* ============================= RENDER: STEP 2 — ADAPTIVE ============================= */
+function renderStep2(){
+  State.category = categorize(State.intake.chief);
+  const questions = ADAPTIVE_QUESTIONS[State.category] || ADAPTIVE_QUESTIONS.general;
+  return `
+  <div class="card">
+    <h2>${t('adaptive_title')}</h2>
+    <p class="lede">${t('adaptive_sub')}</p>
+    ${questions.map(q=>`
+      <label>${q.label}</label>
+      <div class="pillgroup">
+        <div class="pill ${State.adaptive[q.id]===true?'active':''}" onclick="setAdaptive('${q.id}', true)">${t('yes')}</div>
+        <div class="pill ${State.adaptive[q.id]===false?'active':''}" onclick="setAdaptive('${q.id}', false)">${t('no')}</div>
+      </div>
+    `).join('')}
+    ${renderFlagBanners(evaluateRedFlags())}
+  </div>
+  <div class="actions no-print">
+    <button class="btn" onclick="goStep(1)">${t('back')}</button>
+    <button class="btn btn-primary" onclick="goStep(3)">${t('cont')}</button>
+  </div>`;
+}
+
+/* ============================= RENDER: STEP 3 — ROS ============================= */
+function renderStep3(){
+  const systems = ROS_SYSTEMS[State.category] || ROS_SYSTEMS.general;
+  return `
+  <div class="card">
+    <h2>${t('ros_title')}</h2>
+    <p class="lede">${t('ros_sub')}</p>
+    ${systems.map(sys=>`
+      <div class="section-title">${sys.replace(/_/g,' ')}</div>
+      <div class="pillgroup">
+        ${(ROS_ITEMS[sys]||[]).map(item=>`<div class="pill ${State.ros.includes(item)?'active':''}" onclick="toggleRos('${item.replace(/'/g,"\\'")}')">${item}</div>`).join('')}
+      </div>
+    `).join('')}
+  </div>
+  <div class="actions no-print">
+    <button class="btn" onclick="goStep(2)">${t('back')}</button>
+    <button class="btn btn-primary" onclick="goStep(4)">${t('cont')}</button>
+  </div>`;
+}
+
+/* ============================= RENDER: STEP 4 — SCREENERS ============================= */
+function renderStep4(){
+  const scale = [['f0',0],['f1',1],['f2',2],['f3',3]];
+  const items = [['phq1','phq1'],['phq2','phq2'],['gad1','gad1'],['gad2','gad2']];
+  return `
+  <div class="card">
+    <h2>${t('screeners_title')}</h2>
+    <p class="lede">${t('screeners_sub')}</p>
+    ${items.map(([id,labelKey])=>`
+      <label>${t(labelKey)}</label>
+      <div class="pillgroup">
+        ${scale.map(([k,v])=>`<div class="pill ${State.screeners[id]===v?'active':''}" onclick="setScreener('${id}', ${v})">${t(k)}</div>`).join('')}
+      </div>
+    `).join('')}
+  </div>
+  <div class="actions no-print">
+    <button class="btn" onclick="goStep(3)">${t('back')}</button>
+    <button class="btn btn-primary" onclick="goStep(5)">${t('cont')}</button>
+  </div>`;
+}
+
+/* ============================= RENDER: STEP 5 — MEDS & ALLERGIES ============================= */
+const FREQ_OPTIONS = ['Once daily','Twice daily','Three times daily','Four times daily','As needed','Weekly','Other'];
+function addMed(){ State.meds.push({id:uid(), name:'', dose:'', freq:FREQ_OPTIONS[0]}); renderApp(); }
+function removeMed(id){ State.meds = State.meds.filter(m=>m.id!==id); renderApp(); }
+function updateMed(id, field, val){ const m = State.meds.find(m=>m.id===id); if(m) m[field]=val; }
+function addAllergy(){ State.allergies.push({id:uid(), allergen:'', reaction:''}); renderApp(); }
+function removeAllergy(id){ State.allergies = State.allergies.filter(a=>a.id!==id); renderApp(); }
+function updateAllergy(id, field, val){ const a = State.allergies.find(a=>a.id===id); if(a) a[field]=val; }
+
+function renderStep5(){
+  return `
+  <div class="card">
+    <h2>${t('meds_title')}</h2>
+    ${State.meds.map(m=>`
+      <div class="row3">
+        <input type="text" placeholder="${t('drug_name')}" value="${escapeHtml(m.name)}" oninput="updateMed('${m.id}','name',this.value)">
+        <input type="text" placeholder="${t('dose')}" value="${escapeHtml(m.dose)}" oninput="updateMed('${m.id}','dose',this.value)">
+        <select onchange="updateMed('${m.id}','freq',this.value)">
+          ${FREQ_OPTIONS.map(f=>`<option ${m.freq===f?'selected':''}>${f}</option>`).join('')}
+        </select>
+        <span class="chip-remove" onclick="removeMed('${m.id}')">✕</span>
+      </div>
+    `).join('')}
+    <div class="actions no-print"><button class="btn btn-sm" onclick="addMed()">${t('add_med')}</button></div>
+  </div>
+  <div class="card">
+    <h2>${t('allergies_title')}</h2>
+    ${State.allergies.map(a=>`
+      <div class="row2">
+        <input type="text" placeholder="${t('allergen')}" value="${escapeHtml(a.allergen)}" oninput="updateAllergy('${a.id}','allergen',this.value)">
+        <input type="text" placeholder="${t('reaction')}" value="${escapeHtml(a.reaction)}" oninput="updateAllergy('${a.id}','reaction',this.value)">
+        <span class="chip-remove" onclick="removeAllergy('${a.id}')">✕</span>
+      </div>
+    `).join('')}
+    <div class="actions no-print"><button class="btn btn-sm" onclick="addAllergy()">${t('add_allergy')}</button></div>
+  </div>
+  <div class="actions no-print">
+    <button class="btn" onclick="goStep(4)">${t('back')}</button>
+    <button class="btn btn-primary" onclick="goStep(6)">${t('cont')}</button>
+  </div>`;
+}
+
+/* ============================= RENDER: STEP 6 — INSURANCE ============================= */
+function renderStep6(){
+  const ins = State.insurance;
+  return `
+  <div class="card">
+    <h2>${t('insurance_title')}</h2>
+    <p class="lede">${t('insurance_sub')}</p>
+    <label>${t('payer')}</label>
+    <input type="text" value="${escapeHtml(ins.payer)}" oninput="State.insurance.payer=this.value">
+    <div class="row">
+      <div><label>${t('member_id')}</label><input type="text" value="${escapeHtml(ins.memberId)}" oninput="State.insurance.memberId=this.value"></div>
+      <div><label>${t('group_number')}</label><input type="text" value="${escapeHtml(ins.groupNumber)}" oninput="State.insurance.groupNumber=this.value"></div>
+    </div>
+    <label>${t('plan_type')}</label>
+    <select onchange="State.insurance.planType=this.value">
+      <option value="">—</option>
+      ${['HMO','PPO','EPO','Medicare','Medicaid','Self-pay'].map(p=>`<option ${ins.planType===p?'selected':''}>${p}</option>`).join('')}
+    </select>
+  </div>
+  <div class="actions no-print">
+    <button class="btn" onclick="goStep(5)">${t('back')}</button>
+    <button class="btn btn-primary" onclick="goStep(7)">${t('cont')}</button>
+  </div>`;
+}
+
+/* ============================= RENDER: STEP 7 — PHOTOS + OWN QUESTIONS ============================= */
+function handlePhotoFiles(fileList){
+  Array.from(fileList).slice(0, 6-State.photos.length).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = () => { State.photos.push({id:uid(), name:file.name, dataUrl:reader.result}); renderApp(); };
+    reader.readAsDataURL(file);
+  });
+}
+function removePhoto(id){ State.photos = State.photos.filter(p=>p.id!==id); renderApp(); }
+
+function renderStep7(){
+  return `
+  <div class="card">
+    <h2>${t('photos_title')}</h2>
+    <p class="lede">${t('photos_sub')}</p>
+    <input type="file" id="photoInput" accept="image/*" multiple class="hidden" onchange="handlePhotoFiles(this.files)">
+    <div class="actions no-print" style="margin-top:.5rem;">
+      <button class="btn btn-sm" ${State.photos.length>=6?'disabled':''} onclick="document.getElementById('photoInput').click()">${t('add_photo')}</button>
+    </div>
+    <div class="photo-grid">
+      ${State.photos.map(p=>`<div class="photo-thumb"><img src="${p.dataUrl}"><span onclick="removePhoto('${p.id}')">✕</span></div>`).join('')}
+    </div>
+  </div>
+  <div class="card">
+    <h2>${t('own_q')}</h2>
+    <textarea placeholder="${t('own_q_ph')}" oninput="State.ownQuestions=this.value">${escapeHtml(State.ownQuestions)}</textarea>
+  </div>
+  <div class="actions no-print">
+    <button class="btn" onclick="goStep(6)">${t('back')}</button>
+    <button class="btn btn-primary" id="genBtn" onclick="doGenerate()">${t('generate')}</button>
+  </div>`;
+}
+
+/* ============================= RED FLAG BANNERS ============================= */
+function renderFlagBanners(flags){
+  const urgent = flags.filter(f=>f.level==='urgent');
+  const warn = flags.filter(f=>f.level==='warn');
+  let html = '';
+  if(urgent.length) html += `<div class="banner banner-red"><div class="btitle">⚠ ${t('urgent_title')}</div><div class="bbody">${t('urgent_body')}<ul>${urgent.map(f=>`<li>${escapeHtml(f.msg)}</li>`).join('')}</ul></div></div>`;
+  if(warn.length) html += `<div class="banner banner-amber"><div class="btitle">${t('warn_title')}</div><div class="bbody"><ul>${warn.map(f=>`<li>${escapeHtml(f.msg)}</li>`).join('')}</ul></div></div>`;
+  return html;
+}
+
+/* ============================= GENERATE + SUMMARY ============================= */
+async function doGenerate(){
+  const btn = document.getElementById('genBtn');
+  if(btn){ btn.disabled = true; btn.innerText = '…'; }
+  const flags = evaluateRedFlags();
+  const screenerFlags = evaluateScreenerFlags();
+  const hpi = await generateHPI();
+  const ddx = await generateDifferential();
+  const reco = await generateClinicalRecommendations();
+  const soap = await generateSOAPNote(hpi, ddx, reco, flags);
+  const visit = {
+    id: uid(), patientId: State.user.id, patientName: State.user.name,
+    createdAt: new Date().toISOString(),
+    intake: JSON.parse(JSON.stringify(State.intake)),
+    category: State.category,
+    adaptive: JSON.parse(JSON.stringify(State.adaptive)),
+    ros: State.ros.slice(),
+    screeners: JSON.parse(JSON.stringify(State.screeners)),
+    screenerFlags, flags,
+    meds: JSON.parse(JSON.stringify(State.meds)),
+    allergies: JSON.parse(JSON.stringify(State.allergies)),
+    insurance: JSON.parse(JSON.stringify(State.insurance)),
+    photos: State.photos.slice(),
+    ownQuestions: State.ownQuestions,
+    hpi, ddx, reco, soap,
+  };
+  await saveVisit(visit);
+  State.step = 'summary';
+  State.currentVisit = visit;
+  render();
+}
+
+function buildQuestionsToAsk(visit){
+  const qs = [];
+  if(visit.flags.some(f=>f.level==='urgent')) qs.push('Given my symptoms, is there anything urgent I should be watching for right now?');
+  if(visit.intake.pattern.length && visit.intake.pattern.join(' ').toLowerCase().includes('worse')) qs.push('Since this has been getting worse, what would make you consider further testing or imaging?');
+  if(visit.meds.length) qs.push("Could any of my current medications be contributing to this, or interact with anything you're considering prescribing?");
+  if(visit.screenerFlags.length) qs.push('You mentioned screening — what would the next step look like if this is positive?');
+  qs.push("What's the most likely explanation, and what else are you ruling out?");
+  qs.push("What should happen if this doesn't get better — what's the next step?");
+  const own = (visit.ownQuestions||'').split('\n').map(s=>s.trim()).filter(Boolean);
+  const combined = [...own, ...qs];
+  const seen = new Set();
+  return combined.filter(q=>{ const k=q.toLowerCase(); if(seen.has(k)) return false; seen.add(k); return true; }).slice(0,7);
+}
+
+function renderSummary(visit){
+  const questions = buildQuestionsToAsk(visit);
+  return `
+  <div class="card summary">
+    <div class="badge no-print">${t('ready')}</div>
+    <h2>${escapeHtml(visit.intake.chief)}</h2>
+
+    ${renderFlagBanners(visit.flags)}
+
+    <h3>${t('hpi_title')}</h3>
+    <p style="font-size:14.5px;line-height:1.6;">${escapeHtml(visit.hpi.text)}</p>
+    ${visit.hpi.source==='template' ? `<p class="hint no-print">Generated from structured answers. Connect an AI backend for natural-language generation — see notes at the end of this file's source.</p>` : ''}
+
+    <h3>${t('timeline')}</h3>
+    <div class="field-line"><div class="k">${t('onset_l')}</div><div class="v">${escapeHtml(visit.intake.onset)||t('not_specified')}</div></div>
+    <div class="field-line"><div class="k">${t('severity_l')}</div><div class="v">${escapeHtml(visit.intake.severity)||t('not_specified')}</div></div>
+    <div class="field-line"><div class="k">${t('pattern_l')}</div><div class="v">${visit.intake.pattern.join(', ')||t('not_specified')}</div></div>
+    <div class="field-line"><div class="k">${t('assoc_l')}</div><div class="v">${escapeHtml(visit.intake.assoc)||t('none')}</div></div>
+    <div class="field-line"><div class="k">${t('tried_l')}</div><div class="v">${escapeHtml(visit.intake.tried)||t('none')}</div></div>
+    <div class="field-line"><div class="k">${t('history_l')}</div><div class="v">${escapeHtml(visit.intake.history)||t('none')}</div></div>
+
+    ${visit.ros.length ? `<h3>${t('ros_summary')}</h3><p style="font-size:14px;">${visit.ros.join(', ')}</p>` : ''}
+
+    ${visit.screenerFlags.length ? `<h3>${t('screeners_summary')}</h3>${visit.screenerFlags.map(f=>`<p style="font-size:14px;">${escapeHtml(f.msg)}</p>`).join('')}` : ''}
+
+    <h3>${t('meds_summary')}</h3>
+    <div class="field-line"><div class="v">${visit.meds.length ? visit.meds.map(m=>escapeHtml(`${m.name} — ${m.dose} — ${m.freq}`)).join('<br>') : t('none')}</div></div>
+
+    <h3>${t('allergies_summary')}</h3>
+    <div class="field-line"><div class="v">${visit.allergies.length ? visit.allergies.map(a=>escapeHtml(`${a.allergen}: ${a.reaction}`)).join('<br>') : t('none_known')}</div></div>
+
+    ${(visit.insurance.payer || visit.insurance.memberId) ? `
+      <h3>${t('insurance_summary')}</h3>
+      <div class="field-line"><div class="v">${escapeHtml(visit.insurance.payer)} ${visit.insurance.planType?`(${visit.insurance.planType})`:''} ${visit.insurance.memberId?'— Member ID '+escapeHtml(visit.insurance.memberId):''}</div></div>
+    ` : ''}
+
+    ${visit.photos.length ? `<h3 class="no-print">${t('photos_title')}</h3><div class="photo-grid no-print">${visit.photos.map(p=>`<div class="photo-thumb"><img src="${p.dataUrl}"></div>`).join('')}</div>` : ''}
+
+    <h3>${t('questions_title')}</h3>
+    <ol class="qlist">${questions.map((q,i)=>`<li><span class="qnum">${i+1}</span><span>${escapeHtml(q)}</span></li>`).join('')}</ol>
+
+    <div class="disclaimer">${t('disclaimer')}</div>
+  </div>
+  <div class="actions no-print">
+    <button class="btn" onclick="State.step=1;render();">${t('edit')}</button>
+    <button class="btn" onclick="window.print()">${t('print')}</button>
+    <button class="btn" onclick="copySummary()">${t('copy')}</button>
+    <button class="btn btn-primary" onclick="startNewVisit()">${t('new_visit')}</button>
+  </div>
+  ${renderClinicianSection(visit)}
+  <div class="card no-print" id="historyCard"></div>`;
+}
+
+function aiSourceNote(source){
+  return `<p class="hint no-print">${source==='ai' ? t('ai_source_ai') : t('ai_source_template')}</p>`;
+}
+function renderClinicianSection(visit){
+  const ddx = visit.ddx || {items:[], source:'template'};
+  const reco = visit.reco || {items:[], source:'template'};
+  const soap = visit.soap || {s:'',o:'',a:'',p:'',source:'template'};
+  return `
+  <div class="card">
+    <div class="badge" style="background:var(--teal-tint);color:var(--teal-dark);">${t('clinician_only')}</div>
+    <p class="hint" style="margin-top:-.4rem;">${t('clinician_only_sub')}</p>
+
+    <h3>${t('ddx_title')}</h3>
+    ${ddx.items.length ? `<ul class="hint" style="margin:.3rem 0 0;padding-left:1.1rem;color:var(--ink);">${ddx.items.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : `<p class="hint">${t('ddx_empty')}</p>`}
+    ${aiSourceNote(ddx.source)}
+
+    <h3>${t('reco_title')}</h3>
+    ${reco.items.length ? `<ul class="hint" style="margin:.3rem 0 0;padding-left:1.1rem;color:var(--ink);">${reco.items.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : `<p class="hint">${t('reco_empty')}</p>`}
+    ${aiSourceNote(reco.source)}
+
+    <h3>${t('soap_title')}</h3>
+    <div class="field-line"><div class="k">${t('soap_s')}</div><div class="v">${escapeHtml(soap.s)}</div></div>
+    <div class="field-line"><div class="k">${t('soap_o')}</div><div class="v">${escapeHtml(soap.o)}</div></div>
+    <div class="field-line"><div class="k">${t('soap_a')}</div><div class="v">${escapeHtml(soap.a)}</div></div>
+    <div class="field-line"><div class="k">${t('soap_p')}</div><div class="v" style="white-space:pre-line;">${escapeHtml(soap.p)}</div></div>
+    ${aiSourceNote(soap.source)}
+
+    <h3 class="no-print">${t('ehr_title')}</h3>
+    <p class="hint no-print">${t('ehr_note')}</p>
+    <div class="actions no-print" style="margin-top:.75rem;">
+      <button class="btn btn-sm" onclick="exportFHIR('${visit.id}')">${t('export_fhir')}</button>
+      <button class="btn btn-sm" onclick="sendToEHR('${visit.id}')">${t('send_ehr')}</button>
+    </div>
+  </div>`;
+}
+function copySummary(){
+  const card = document.querySelector('.summary');
+  const text = card.innerText;
+  navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text).catch(()=>fallbackCopy(text)) : fallbackCopy(text);
+}
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+function startNewVisit(){
+  State.step = 1; State.currentVisit = null;
+  State.intake = { chief:'', onset:'', severity:'', pattern:[], assoc:'', tried:'', history:'' };
+  State.category='general'; State.adaptive={}; State.ros=[]; State.screeners={};
+  State.meds=[]; State.allergies=[]; State.insurance={payer:'',memberId:'',groupNumber:'',planType:''};
+  State.photos=[]; State.ownQuestions='';
+  render();
+}
+
+/* ============================= VISIT HISTORY (patient view) ============================= */
+function renderHistoryList(){
+  const visits = getVisitsForPatient(State.user.id);
+  if(!visits.length) return `<p class="hint">${t('no_history')}</p>`;
+  return `<h3 style="margin-bottom:.5rem;">${t('history_title')}</h3>` + visits.map(v=>{
+    const urgent = v.flags.some(f=>f.level==='urgent');
+    const warn = v.flags.some(f=>f.level==='warn') || v.screenerFlags.length;
+    return `<div class="field-line" style="cursor:pointer;" onclick='viewVisit("${v.id}")'>
+      <div class="k"><span class="dot ${urgent?'red':warn?'amber':'gray'}"></span>${escapeHtml(v.intake.chief)}</div>
+      <div class="v">${new Date(v.createdAt).toLocaleDateString()}</div>
+    </div>`;
+  }).join('');
+}
+function viewVisit(id){
+  const v = getVisitsForPatient(State.user.id).find(v=>v.id===id);
+  if(v){ State.currentVisit = v; State.step='summary'; render(); }
+}
+
+/* ============================= DOCTOR DASHBOARD ============================= */
+const DEMO_CODE = 'demo';
+function goDashboard(){ State.view='dashboard'; render(); }
+function unlockDashboard(){
+  const code = document.getElementById('dashCode').value;
+  if(code===DEMO_CODE){ State.dashUnlocked=true; render(); }
+}
+function renderDashboard(){
+  if(!State.dashUnlocked){
+    return `
+    <h1>${t('dashboard')}</h1>
+    <div class="card">
+      <p class="hint">Demo access only — enter <code>${DEMO_CODE}</code>. Replace with real clinician auth before production use.</p>
+      <label>Access code</label>
+      <input type="password" id="dashCode">
+      <div class="actions"><button class="btn btn-primary" onclick="unlockDashboard()">Enter</button></div>
+    </div>
+    <div class="actions"><a href="#" onclick="State.view=State.user?'app':'login';render();return false;" class="btn-ghost">← Back</a></div>`;
+  }
+  const visits = getAllVisits();
+  return `
+  <h1>${t('dashboard')}</h1>
+  <div class="banner banner-amber no-print">
+    <div class="btitle">${t('compliance_title')}</div>
+    <div class="bbody">${t('compliance_body')}</div>
+  </div>
+  <div class="card">
+    ${!visits.length ? '<p class="hint">No visits submitted yet.</p>' : `
+    <table class="dash">
+      <thead><tr><th>Patient</th><th>Chief complaint</th><th>Flags</th><th>Submitted</th></tr></thead>
+      <tbody>
+        ${visits.map(v=>{
+          const urgent = v.flags.some(f=>f.level==='urgent');
+          const warn = v.flags.some(f=>f.level==='warn') || v.screenerFlags.length;
+          return `<tr onclick='viewDashVisit("${v.id}")'>
+            <td>${escapeHtml(v.patientName||'—')}</td>
+            <td>${escapeHtml(v.intake.chief)}</td>
+            <td><span class="dot ${urgent?'red':warn?'amber':'gray'}"></span>${urgent?'Urgent':warn?'Review':'Routine'}</td>
+            <td>${new Date(v.createdAt).toLocaleString()}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`}
+  </div>
+  <div class="actions no-print"><a href="#" onclick="State.view=State.user?'app':'login';render();return false;" class="btn-ghost">← Back</a></div>`;
+}
+function viewDashVisit(id){
+  const v = getAllVisits().find(v=>v.id===id);
+  if(v){ State.currentVisit=v; State.view='app'; State.step='summary'; render(); }
+}
+
+/* ============================= MAIN RENDER / ROUTER ============================= */
+function goStep(n){ State.step=n; render(); }
+function renderApp(){
+  const root = document.getElementById('root');
+  let inner = '';
+  if(State.step==='summary' && State.currentVisit){
+    inner = renderSummary(State.currentVisit);
+  } else {
+    inner = `<div class="eyebrow">${t('brand')}</div><h1>${t('tagline')}</h1><p class="lede">${t('intro')}</p>` + renderProgress();
+    if(State.step===1) inner += renderStep1();
+    else if(State.step===2) inner += renderStep2();
+    else if(State.step===3) inner += renderStep3();
+    else if(State.step===4) inner += renderStep4();
+    else if(State.step===5) inner += renderStep5();
+    else if(State.step===6) inner += renderStep6();
+    else if(State.step===7) inner += renderStep7();
+  }
+  root.innerHTML = inner;
+  if(State.step==='summary'){
+    const hc = document.getElementById('historyCard');
+    if(hc) hc.innerHTML = renderHistoryList();
+  }
+}
+function render(){
+  renderTopbar();
+  if(State.view==='login') renderLogin();
+  else if(State.view==='dashboard') document.getElementById('root').innerHTML = renderDashboard();
+  else renderApp();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+/* ============================= INIT ============================= */
+(function init(){
+  const session = readJSON('previsit_session', null);
+  if(session){ State.user = session; State.view = 'app'; }
+  render();
+})();
+</script>
+
+<!--
+PRODUCTION NOTES (read before real patient data goes anywhere near this):
+
+1. AUTH: signup()/login() store plaintext passwords in localStorage. This proves
+   out the account/session flow only. Replace with Supabase Auth / Clerk / Auth0
+   before real use.
+
+2. STORAGE: saveVisit() now tries POST /api/visits first and always also caches
+   to localStorage as a fallback (see the STORAGE section above). Reads
+   (getVisitsForPatient / getAllVisits) still read the local cache synchronously
+   for simplicity — for a real multi-device deployment, point those at
+   GET /api/visits too and treat localStorage as an offline cache only, not the
+   source of truth. Needs a real database (Postgres/Supabase) before multiple
+   people can reliably use this together.
+
+3. AI HPI / DIFFERENTIAL / RECOMMENDATIONS / SOAP: generateHPI(),
+   generateDifferential(), generateClinicalRecommendations(), and
+   generateSOAPNote() each call their own POST /api/... endpoint first (see the
+   fetch() calls in each function) and fall back to a deterministic,
+   physician-editable template if no backend responds. Add serverless functions
+   at those paths (e.g. on Vercel) that call the Anthropic API server-side, with
+   ANTHROPIC_API_KEY kept server-side only — never in client code. Until you do,
+   every AI-labeled section runs on the transparent template and is clearly
+   marked as such in the UI (see aiSourceNote()).
+   IMPORTANT: differential diagnosis and clinical recommendations are decision
+   SUPPORT for a licensed clinician to confirm against exam/history/testing —
+   they are deliberately never shown to the patient as a diagnosis, and the
+   summary/SOAP UI always carries that disclaimer. Don't remove it.
+
+4. SOAP NOTE: the "Objective" section is intentionally left as a placeholder —
+   vitals and exam findings cannot come from a patient self-report form. Wire a
+   real EHR/exam system if you want it auto-populated; don't fabricate it.
+
+5. EHR INTEGRATION: buildFHIRBundle()/exportFHIR()/sendToEHR() produce a
+   FHIR-*shaped* JSON bundle (Patient/Condition/DocumentReference/
+   MedicationStatement/AllergyIntolerance) and POST it to /api/ehr-export if
+   present, else download it. This is a data-shaping convenience, NOT a real EHR
+   connection. Real EHR integration (Epic, Cerner/Oracle Health, athenahealth,
+   etc.) requires: app registration with the health system, a server-side SMART
+   on FHIR OAuth2 client, a signed integration/BAA agreement, and usually their
+   sandbox certification process — none of which can live in client-side code.
+   Budget for a backend engineer and weeks of health-system approval, not a
+   config flag.
+
+6. DASHBOARD ACCESS: the "demo" passcode is a placeholder for the UI flow, not
+   real authorization. Replace with real clinician accounts and role-based
+   access control.
+
+7. HIPAA — WHAT "COMPLIANT" ACTUALLY REQUIRES: this app is not HIPAA compliant
+   as shipped, and no amount of front-end code makes it so. The
+   Security & Compliance banner on the dashboard says this out loud on purpose —
+   don't remove it until the items below are actually true:
+     - Signed Business Associate Agreements with every vendor that touches PHI:
+       database host, file/photo storage, AI provider, hosting/CDN.
+     - Encryption in transit (TLS everywhere — already true if deployed on
+       HTTPS) AND at rest (database- and object-storage-level encryption).
+     - Real authentication with proper password hashing (bcrypt/argon2) and
+       session management — never plaintext passwords like the demo auth above.
+     - Role-based access control so patients only ever see their own visits and
+       clinician dashboard access is tied to a verified clinician identity.
+     - Audit logging: who accessed which patient's data, when.
+     - Automatic session timeout and account lockout policies.
+     - A documented breach-notification process and a designated Privacy/
+       Security Officer, per the HIPAA Security Rule's administrative
+       safeguards — this is a policy requirement, not a code change.
+     - Minimum-necessary data handling: don't store or transmit more PHI than
+       each feature needs (e.g., don't send photos to a summarization endpoint
+       that doesn't need them).
+   Practically: use a HIPAA-eligible backend (AWS/GCP/Azure with a signed BAA,
+   or a healthcare-specific platform like Supabase's HIPAA add-on, Truepill,
+   or similar), and have a compliance review before any real patient data
+   touches this app.
+
+8. RED FLAGS & QUESTION BANK: evaluateRedFlags() and ADAPTIVE_QUESTIONS above
+   are the clinical core of this app, written as plain, readable rule tables on
+   purpose — so a physician can review and edit them directly. The new
+   DIFFERENTIAL_CONSIDERATIONS and CLINICAL_RECOMMENDATIONS tables follow the
+   same pattern for the same reason: a physician should own and edit this
+   content, AI backend or not.
+-->
+</body>
+</html>
